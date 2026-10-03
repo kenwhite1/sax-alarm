@@ -1,3 +1,4 @@
+import { t, useLang, getLang } from '../lib/i18n';
 /**
  * Экран будильника: крещендо-саксофон + камера + распознавание питья.
  * Fallback-цепочка: 2 повтора распознавания → ручное подтверждение с пометкой «непроверено».
@@ -12,6 +13,7 @@ import { haptic } from '../lib/telegram';
 type Phase = 'ringing' | 'camera' | 'detecting' | 'success' | 'failed';
 
 export function Alarm({ alarmId, boost, onDone }: { alarmId: number; boost: number; onDone: () => void }) {
+  useLang();
   const [phase, setPhase] = useState<Phase>('ringing');
   const [attempts, setAttempts] = useState(0);
   const [message, setMessage] = useState('');
@@ -130,13 +132,13 @@ export function Alarm({ alarmId, boost, onDone }: { alarmId: number; boost: numb
       {phase === 'ringing' && (
         <>
           <div className="sax">🎷</div>
-          <h1>ПОРА ПИТЬ!</h1>
-          {boost > 1 && <p className="dim">Сквад-буст ×{boost.toFixed(2)} — твои друзья уже наливают</p>}
+          <h1>{t("ПОРА ПИТЬ!")}</h1>
+          {boost > 1 && <p className="dim">{t("Сквад-буст ×")}{boost.toFixed(2)}{t("— твои друзья уже наливают")}</p>}
           <div className="vol-meter">
             {[0, 1, 2, 3, 4].map(i => <span key={i} style={{ animationDelay: `${i * 90}ms` }} />)}
           </div>
-          <p className="dim">Саксофоны будут играть всё громче, пока ты не выпьешь</p>
-          <button className="btn danger" onClick={wakeUp}>🔊 Проснуться и налить</button>
+          <p className="dim">{t("Саксофоны будут играть всё громче, пока ты не выпьешь")}</p>
+          <button className="btn danger" onClick={wakeUp}>{t("🔊 Проснуться и налить")}</button>
         </>
       )}
 
@@ -146,22 +148,18 @@ export function Alarm({ alarmId, boost, onDone }: { alarmId: number; boost: numb
             <video ref={videoRef} playsInline muted />
             <div className="scan-ring" />
             <div className="cam-hint">
-              {phase === 'detecting' ? '🎥 Пей, не останавливайся — снимаю серию…' : '🥤 Поднеси напиток ко рту и жми кнопку'}
+              {t(phase === 'detecting' ? '🎥 Пей, не останавливайся — снимаю серию…' : '🥤 Поднеси напиток ко рту и жми кнопку')}
             </div>
           </div>
           <canvas ref={canvasRef} style={{ display: 'none' }} />
-          {message && <p className="dim">{message}</p>}
+          {message && <p className="dim">{t(message)}</p>}
 
-          {phase === 'camera' && <button className="btn" onClick={proveDrink}>📸 Я пью — проверяй</button>}
-          {phase === 'detecting' && <button className="btn" disabled>Распознаю…</button>}
+          {phase === 'camera' && <button className="btn" onClick={proveDrink}>{t("📸 Я пью — проверяй")}</button>}
+          {phase === 'detecting' && <button className="btn" disabled>{t("Распознаю…")}</button>}
           {phase === 'failed' && (
             <>
-              <button className="btn secondary" onClick={() => { setAttempts(0); setPhase('camera'); }}>
-                🔁 Попробовать ещё раз
-              </button>
-              <button className="btn" onClick={manualConfirm}>
-                ✋ Я честно выпил (пометка «непроверено»)
-              </button>
+              <button className="btn secondary" onClick={() => { setAttempts(0); setPhase('camera'); }}>{t("🔁 Попробовать ещё раз")}</button>
+              <button className="btn" onClick={manualConfirm}>{t("✋ Я честно выпил (пометка «непроверено»)")}</button>
             </>
           )}
         </>
@@ -170,11 +168,11 @@ export function Alarm({ alarmId, boost, onDone }: { alarmId: number; boost: numb
       {phase === 'success' && (
         <>
           <div className="sax" style={{ animation: 'none' }}>🥃</div>
-          <h1>Дринк засчитан!</h1>
+          <h1>{t("Дринк засчитан!")}</h1>
           <span className={`badge ${status}`}>
-            {status === 'verified' ? '✔ проверено CV' : status === 'unverified' ? '~ непроверено' : '⚑ на проверке'}
+            {t(status === 'verified' ? '✔ проверено CV' : status === 'unverified' ? '~ непроверено' : '⚑ на проверке')}
           </span>
-          <p className="dim">Саксофоны умолкли. До следующего раза…</p>
+          <p className="dim">{t("Саксофоны умолкли. До следующего раза…")}</p>
         </>
       )}
     </div>

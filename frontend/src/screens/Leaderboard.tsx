@@ -1,3 +1,4 @@
+import { t, useLang, getLang } from '../lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import { AdSlot } from '../components/AdSlot';
@@ -5,6 +6,7 @@ import { AdSlot } from '../components/AdSlot';
 const PERIODS = [['day', 'День'], ['week', 'Неделя'], ['all', 'Всё время']] as const;
 
 export function Leaderboard({ meId, squads }: { meId: number; squads: any[] }) {
+  useLang();
   const [period, setPeriod] = useState<'day' | 'week' | 'all'>('day');
   const [scope, setScope] = useState<string>('global');
   const [data, setData] = useState<{ rows: any[]; me?: any }>({ rows: [] });
@@ -15,10 +17,10 @@ export function Leaderboard({ meId, squads }: { meId: number; squads: any[] }) {
 
   return (
     <div className="screen fade-in">
-      <h1>Самые пьющие 🏆</h1>
+      <h1>{t("Самые пьющие 🏆")}</h1>
 
       <div className="seg" style={{ marginTop: 16 }}>
-        <button className={scope === 'global' ? 'active' : ''} onClick={() => setScope('global')}>Мир</button>
+        <button className={scope === 'global' ? 'active' : ''} onClick={() => setScope('global')}>{t("Мир")}</button>
         {squads.map(s => (
           <button key={s.id} className={scope === `squad:${s.id}` ? 'active' : ''} onClick={() => setScope(`squad:${s.id}`)}>
             {s.name}
@@ -27,11 +29,11 @@ export function Leaderboard({ meId, squads }: { meId: number; squads: any[] }) {
       </div>
       <div className="seg">
         {PERIODS.map(([k, label]) => (
-          <button key={k} className={period === k ? 'active' : ''} onClick={() => setPeriod(k)}>{label}</button>
+          <button key={k} className={period === k ? 'active' : ''} onClick={() => setPeriod(k)}>{t(label)}</button>
         ))}
       </div>
 
-      {data.rows.length === 0 && <p className="dim">Пока тишина. Первый дринк — твой шанс на топ-1.</p>}
+      {data.rows.length === 0 && <p className="dim">{t("Пока тишина. Первый дринк — твой шанс на топ-1.")}</p>}
 
       {data.rows.map(r => (
         <div key={r.userId} className={`lb-row ${r.userId === meId ? 'me' : ''}`}>
@@ -47,7 +49,7 @@ export function Leaderboard({ meId, squads }: { meId: number; squads: any[] }) {
       {data.me && data.me.rank > 50 && (
         <div className="lb-row me">
           <span className="lb-rank">{data.me.rank}</span>
-          <span style={{ flex: 1 }}>Ты</span>
+          <span style={{ flex: 1 }}>{t("Ты")}</span>
           <span className="num">{data.me.drinks}</span>
         </div>
       )}

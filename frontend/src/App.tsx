@@ -1,3 +1,4 @@
+import { t, useLang, getLang } from './lib/i18n';
 import { useCallback, useEffect, useState } from 'react';
 import { initTelegram, alarmIdFromLaunch, tg } from './lib/telegram';
 import { api } from './lib/api';
@@ -19,6 +20,7 @@ const TABS: [Tab, string, string][] = [
 ];
 
 export default function App() {
+  useLang();
   const [tab, setTab] = useState<Tab>('home');
   const [me, setMe] = useState<any>(null);
   const [squadData, setSquadData] = useState<{ squads: any[]; currentBoost: number }>({ squads: [], currentBoost: 1 });
@@ -57,7 +59,7 @@ export default function App() {
       <div className="screen" style={{ paddingTop: 64, textAlign: 'center' }}>
         <div style={{ fontSize: 64 }}>🎷</div>
         <h1>Sax Alarm</h1>
-        <p className="dim">Открой это приложение внутри Telegram.</p>
+        <p className="dim">{t("Открой это приложение внутри Telegram.")}</p>
       </div>
     );
   }
@@ -77,7 +79,7 @@ export default function App() {
       <nav className="tabbar">
         {TABS.map(([key, ico, label]) => (
           <button key={key} className={tab === key ? 'active' : ''} onClick={() => setTab(key)}>
-            <span className="ico">{ico}</span>{label}
+            <span className="ico">{ico}</span>{t(label)}
           </button>
         ))}
       </nav>

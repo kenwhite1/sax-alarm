@@ -1,3 +1,4 @@
+import { t, useLang, getLang } from '../lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import { tg, haptic } from '../lib/telegram';
@@ -8,6 +9,7 @@ const ICONS: Record<string, string> = {
 };
 
 export function Shop({ me, refresh }: { me: any; refresh: () => void }) {
+  useLang();
   const [products, setProducts] = useState<any[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -32,37 +34,33 @@ export function Shop({ me, refresh }: { me: any; refresh: () => void }) {
 
   return (
     <div className="screen fade-in">
-      <h1>Магазин ⭐</h1>
+      <h1>{t("Магазин ⭐")}</h1>
 
       {me?.user?.is_premium && (
         <div className="card" style={{ borderColor: 'var(--brass)' }}>
-          <h2>🎷 Premium активен</h2>
-          <p className="dim">до {new Date(me.user.premium_until).toLocaleDateString('ru')}</p>
+          <h2>{t("🎷 Premium активен")}</h2>
+          <p className="dim">{t("до")}{new Date(me.user.premium_until).toLocaleDateString(getLang())}</p>
         </div>
       )}
 
       {!me?.user?.is_premium && premium.map(p => (
         <div key={p.code} className="card" style={{ borderColor: 'var(--brass)' }}>
           <h2>🎷 Sax Premium</h2>
-          <p className="dim">
-            Без рекламы · кастомные сакс-ремиксы будильника · расширенная статистика ·
-            эксклюзивные бейджи · сквад до 25 человек
-          </p>
+          <p className="dim">{t("Без рекламы · кастомные сакс-ремиксы будильника · расширенная статистика · эксклюзивные бейджи · сквад до 25 человек")}</p>
           <button className="btn" style={{ marginTop: 12 }} disabled={busy === p.code} onClick={() => buy(p.code)}>
-            {p.stars_price} ⭐ / месяц
-          </button>
+            {p.stars_price}{t("⭐ / месяц")}</button>
         </div>
       ))}
 
-      <h2 style={{ marginTop: 16 }}>Предметы</h2>
+      <h2 style={{ marginTop: 16 }}>{t("Предметы")}</h2>
       {items.map(p => {
         const owned = me?.inventory?.find((i: any) => i.item_code === p.code)?.qty ?? 0;
         return (
           <div key={p.code} className="card" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ fontSize: 28 }}>{ICONS[p.code] ?? '🎁'}</span>
             <div style={{ flex: 1 }}>
-              <strong>{p.title}</strong>
-              {owned > 0 && <span className="dim"> · есть {owned}</span>}
+              <strong>{t(p.title)}</strong>
+              {owned > 0 && <span className="dim">{t("· есть")}{owned}</span>}
             </div>
             <button className="btn" style={{ width: 'auto', padding: '8px 14px' }} disabled={busy === p.code} onClick={() => buy(p.code)}>
               {p.stars_price} ⭐

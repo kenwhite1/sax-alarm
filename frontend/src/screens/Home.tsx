@@ -1,8 +1,10 @@
+import { t, useLang, getLang } from '../lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import { AdSlot } from '../components/AdSlot';
 
 export function Home({ me, refresh }: { me: any; refresh: () => void }) {
+  useLang();
   const [saving, setSaving] = useState(false);
   const [from, setFrom] = useState<number>(me?.user?.active_from ?? 12);
   const [to, setTo] = useState<number>(me?.user?.active_to ?? 22);
@@ -22,37 +24,31 @@ export function Home({ me, refresh }: { me: any; refresh: () => void }) {
   return (
     <div className="screen fade-in">
       <h1>Sax Alarm 🎷</h1>
-      <p className="dim" style={{ marginBottom: 16 }}>
-        Будильник сработает внезапно. Отключить его можно только дринком.
-      </p>
+      <p className="dim" style={{ marginBottom: 16 }}>{t("Будильник сработает внезапно. Отключить его можно только дринком.")}</p>
 
       <div className="card">
-        <h2>Сегодня</h2>
-        <p><span className="num" style={{ fontSize: 40 }}>{me?.stats?.today ?? 0}</span> <span className="dim">дринков</span></p>
-        <p className="dim">🔥 стрик: {me?.user?.streak_days ?? 0} дн. · за неделю: {me?.stats?.week ?? 0}</p>
+        <h2>{t("Сегодня")}</h2>
+        <p><span className="num" style={{ fontSize: 40 }}>{me?.stats?.today ?? 0}</span> <span className="dim">{t("дринков")}</span></p>
+        <p className="dim">{t("🔥 стрик:")}{me?.user?.streak_days ?? 0}{t("дн. · за неделю:")}{me?.stats?.week ?? 0}</p>
       </div>
 
       <div className="card">
-        <h2>Окно будильников</h2>
-        <p className="dim">Ночью не будим. Случайные срабатывания только в этом окне.</p>
+        <h2>{t("Окно будильников")}</h2>
+        <p className="dim">{t("Ночью не будим. Случайные срабатывания только в этом окне.")}</p>
         <div style={{ display: 'flex', gap: 8, margin: '12px 0' }}>
-          <label style={{ flex: 1 }}>
-            с <input type="number" min={0} max={23} value={from} onChange={e => setFrom(+e.target.value)}
+          <label style={{ flex: 1 }}>{t("с")}<input type="number" min={0} max={23} value={from} onChange={e => setFrom(+e.target.value)}
               style={{ width: '100%', padding: 8, borderRadius: 8, border: '1px solid var(--ink-line)', background: 'var(--ink)', color: 'var(--cream)' }} />
           </label>
-          <label style={{ flex: 1 }}>
-            до <input type="number" min={0} max={23} value={to} onChange={e => setTo(+e.target.value)}
+          <label style={{ flex: 1 }}>{t("до")}<input type="number" min={0} max={23} value={to} onChange={e => setTo(+e.target.value)}
               style={{ width: '100%', padding: 8, borderRadius: 8, border: '1px solid var(--ink-line)', background: 'var(--ink)', color: 'var(--cream)' }} />
           </label>
         </div>
-        <button className="btn secondary" onClick={save} disabled={saving}>{saving ? '…' : 'Сохранить'}</button>
+        <button className="btn secondary" onClick={save} disabled={saving}>{t(saving ? '…' : 'Сохранить')}</button>
       </div>
 
       <AdSlot placement="feed" />
 
-      <p className="dim" style={{ marginTop: 24, fontSize: 12 }}>
-        Дринк — это любой напиток: вода, кофе, компот тоже считаются. Пей ответственно. 18+
-      </p>
+      <p className="dim" style={{ marginTop: 24, fontSize: 12 }}>{t("Дринк — это любой напиток: вода, кофе, компот тоже считаются. Пей ответственно. 18+")}</p>
     </div>
   );
 }
